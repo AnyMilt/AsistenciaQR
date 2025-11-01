@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AsistenciaQR.Views.HistorialPage"
+             Title="Historial de Asistencias"
+             x:Name="HistorialView"
+             BackgroundColor="#F5F5F5">
+    <ScrollView>
+
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+        <!-- Encabezado -->
+        <Label Text="📋 Historial de asistencias escaneadas"
+               FontSize="20"
+               FontAttributes="Bold"
+               TextColor="#333" />
+
+        <!-- Resumen -->
+            <Border Stroke="#CCCCCC"
+                StrokeThickness="1"
+                Background="#FFFFFF"
+                Padding="15"
+                Margin="0"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.2" Offset="5,5" Radius="10"/>
+                        </Border.Shadow>
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+                    <Label Text="Total registros:" FontAttributes="Bold" Grid.Column="0" Grid.Row="0" TextColor="#333" />
+                    <Label Text="{Binding Registros.Count}" Grid.Column="1" Grid.Row="0" HorizontalTextAlignment="End" TextColor="#333" />
+
+                    <Label Text="Pendientes:" FontAttributes="Bold" Grid.Column="0" Grid.Row="1" TextColor="#F57C00" />
+                    <Label Text="{Binding Pendientes}" Grid.Column="1" Grid.Row="1" HorizontalTextAlignment="End" TextColor="#F57C00" />
+
+                    <Label Text="Sincronizados:" FontAttributes="Bold" Grid.Column="0" Grid.Row="2" TextColor="#2E7D32" />
+                    <Label Text="{Binding Sincronizados}" Grid.Column="1" Grid.Row="2" HorizontalTextAlignment="End" TextColor="#2E7D32" />
+                </Grid>
+            </Border>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <Button Text="🧹 Todo"
+                    FontSize="13"
+                    BackgroundColor="DarkRed"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Command="{Binding EliminarTodoCommand}"
+                    Grid.Column="0" />                
+
+                <Button Text="🗑 Pend."
+                    FontSize="13"
+                    BackgroundColor="#F57C00"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Command="{Binding EliminarPendientesCommand}"
+                    Grid.Column="1" />
+
+                <Button Text="🔄 Sync"
+                    FontSize="13"
+                    BackgroundColor="#1976D2"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Command="{Binding SincronizarAhoraCommand}"
+                    Grid.Column="2" />
+            </Grid>
+            <Button Text="👀 Pendientes"
+                FontSize="13"
+                BackgroundColor="#388E3C"
+                TextColor="White"
+                FontAttributes="Bold"
+                Command="{Binding MostrarPendientesCommand}"/>
+            <Button Text="📤 Exportar Asistencia"
+                    Command="{Binding ExportarJsonCommand}"
+                    BackgroundColor="#6A1B9A"
+                    TextColor="White"
+                    FontAttributes="Bold" />
+
+
+
+            <!-- Lista de registros -->
+        <!--<CollectionView ItemsSource="{Binding Registros}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="5" Padding="10" BorderColor="#CCC" CornerRadius="10" BackgroundColor="White" HasShadow="True">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding FechaEscaneo, StringFormat='📅 {0:dd/MM/yyyy HH:mm}'}"
+                                   FontAttributes="Bold"
+                                   TextColor="#444" />
+
+                            <Label Text="{Binding UrlEscaneo}" FontSize="12" TextColor="#666" LineBreakMode="WordWrap" />
+
+                            <Label Text="{Binding Estado}"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding Sincronizado, Converter={StaticResource EstadoColorConverter}}" />
+                            --><!-- Botón visible solo si no está sincronizado --><!--
+                            <Button Text="🗑 Eliminar"
+                                    BackgroundColor="IndianRed"
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    IsVisible="{Binding Sincronizado, Converter={StaticResource InverseBoolConverter}}"
+                                    Command="{Binding BindingContext.EliminarRegistroCommand, Source={x:Reference HistorialView}}"
+                                    CommandParameter="{Binding}" />
+                            
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>-->
+
+    </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,20 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:AsistenciaQR.Converters"
+             x:Class="AsistenciaQR.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Conversores globales -->
+            <local:BoolToTextConverter x:Key="BoolToTextConverter" />
+            <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <local:EstadoColorConverter x:Key="EstadoColorConverter" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
