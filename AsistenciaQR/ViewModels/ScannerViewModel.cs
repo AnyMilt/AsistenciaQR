@@ -6,6 +6,7 @@ using AsistenciaQR.Models;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Networking;
+using System.Text.Json;
 
 namespace AsistenciaQR.ViewModels
 {
@@ -20,7 +21,7 @@ namespace AsistenciaQR.ViewModels
 
         private readonly LocalStorageService storage;
         private readonly SyncService sync;
-       
+
 
         [ObservableProperty]
         private string estadoMensaje = string.Empty;
@@ -131,7 +132,7 @@ namespace AsistenciaQR.ViewModels
             }
 
         }
-      
+
 
 
         public ScannerViewModel(LocalStorageService storageService, SyncService syncService)
@@ -170,46 +171,49 @@ namespace AsistenciaQR.ViewModels
 
             try
             {
-                if (!Uri.TryCreate(qrTexto, UriKind.Absolute, out var uri))
+                // 📦 Deserializar el JSON del QR
+                DocenteQR? qrData = null;
+                try
                 {
-                    await MostrarMensajeTemporal("⚠️ Código QR inválido.");
-
+                    qrData = JsonSerializer.Deserialize<DocenteQR>(qrTexto);
+                }
+                catch
+                {
+                    await MostrarMensajeTemporal("⚠️ Código QR inválido o con formato incorrecto.");
                     return;
                 }
 
-                var docenteId = ObtenerDocenteIdDesdeQR(uri);
-                if (docenteId == null)
+                if (qrData == null || Int32.Parse(qrData.idDocente) <= 0)
                 {
-                    await MostrarMensajeTemporal("⚠️ El QR no contiene el parámetro 'docente'.");
+                    await MostrarMensajeTemporal("⚠️ El código QR no contiene datos válidos del docente.");
                     return;
                 }
 
-                var fechaEscaneo = DateTime.Now;
-                // Aqui ubicar fecha y hora
-                var baseUrl = $"{uri.Scheme}://{uri.Host}:{uri.Port}/asistencia/registrar";
-                var fecha = fechaEscaneo.ToString("yyyy-MM-dd");
-                var hora = fechaEscaneo.ToString("HH:mm:ss");
-                var deviceId = ObtenerDeviceId();
-                var (lat, lng) = await ObtenerUbicacionAsync();
+                // 🧩 Aquí antes se calculaban valores — AHORA se usan los del JSON
+                var baseUrl = "https://asistencia.instituto.edu/asistencia/registrar"; // URL fija o configurable
+                var docenteId = qrData.idDocente;
+                var deviceId = qrData.idDispositivo;
+                var lat = qrData.lat;
+                var lng = qrData.lng;
+                var tipo = qrData.tipo;
+                var fecha = qrData.fecha;
 
-
-
-                var urlSincronizacion = $"{baseUrl}?docente={docenteId}&fecha={fecha}&hora={hora}" +
-                        $"&device_id={deviceId}&latitud={lat}&longitud={lng}";
+                // 🔗 Construcción del URL (igual que antes, pero usando datos del JSON)
+                var urlSincronizacion = $"{baseUrl}?docente={docenteId}&fecha={fecha}" +
+                                        $"&tipo={tipo}&device_id={deviceId}&latitud={lat}&longitud={lng}";
 
                 Uri urifinal = new Uri(urlSincronizacion);
-                
 
-                // Intento en línea
+                // 🚀 Intento de registro en línea
                 if (await IntentarRegistroEnLinea(urifinal))
                 {
-                    await MostrarMensajeTemporal("✅ Asistencia registrada correctamente.");
+                    await MostrarMensajeTemporal($"✅ {tipo} registrada correctamente para docente {docenteId}.");
                     VibrarDispositivo();
                 }
                 else
                 {
-                    await MostrarMensajeTemporal("⚠️ No se pudo conectar al servidor. Se guardará localmente.");
-                    await GuardarRegistroLocal(docenteId.Value, uri, fechaEscaneo);
+                    await MostrarMensajeTemporal("⚠️ Sin conexión. Se guardará localmente.");
+                    await GuardarRegistroJsonLocal(qrData);
                 }
             }
             finally
@@ -217,6 +221,7 @@ namespace AsistenciaQR.ViewModels
                 procesandoCodigo = false;
             }
         }
+
         private int? ObtenerDocenteIdDesdeQR(Uri uri)
         {
             var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
@@ -250,6 +255,32 @@ namespace AsistenciaQR.ViewModels
                 Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(300));
             }
             catch { /* Ignorar errores de vibración */ }
+        }
+
+        private async Task GuardarRegistroJsonLocal(DocenteQR qrData)
+        {
+            await DB.InitAsync();
+
+            var urlSincronizacion = $"https://asistencia.instituto.edu/asistencia/registrar?" +
+                                    $"docente={qrData.idDocente}&fecha={qrData.fecha}&tipo={qrData.tipo}" +
+                                    $"&device_id={qrData.idDispositivo}&latitud={qrData.lat}&longitud={qrData.lng}";
+
+            // Evita duplicados
+            if (await DB.ExisteRegistroAsync(urlSincronizacion))
+                return;
+
+            var registro = new RegistroAsistencia
+            {
+                UrlEscaneo = urlSincronizacion,
+                FechaEscaneo = DateTime.Now,
+                Estado = "pendiente",
+                Sincronizado = false,
+                DeviceId = qrData.idDispositivo,
+                Latitud = double.Parse(qrData.lat),
+                Longitud = double.Parse(qrData.lng)
+            };
+
+            await DB.GuardarAsync(registro);
         }
 
         private async Task GuardarRegistroLocal(int docenteId, Uri uri, DateTime fechaEscaneo)

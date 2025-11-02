@@ -1,24 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\El Profe\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj": {}
+    "C:\\Users\\SoloCodigo\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj": {}
   },
   "projects": {
-    "C:\\Users\\El Profe\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj": {
+    "C:\\Users\\SoloCodigo\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\El Profe\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj",
+        "projectUniqueName": "C:\\Users\\SoloCodigo\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj",
         "projectName": "AsistenciaQR",
-        "projectPath": "C:\\Users\\El Profe\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj",
-        "packagesPath": "C:\\Users\\El Profe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\El Profe\\source\\repos\\AsistenciaQR\\AsistenciaQR\\obj\\",
+        "projectPath": "C:\\Users\\SoloCodigo\\source\\repos\\AsistenciaQR\\AsistenciaQR\\AsistenciaQR.csproj",
+        "packagesPath": "C:\\Users\\SoloCodigo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\SoloCodigo\\source\\repos\\AsistenciaQR\\AsistenciaQR\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\El Profe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\SoloCodigo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

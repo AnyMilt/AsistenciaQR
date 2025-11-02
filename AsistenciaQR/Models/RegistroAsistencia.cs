@@ -19,7 +19,7 @@ namespace AsistenciaQR.Models
         public string DeviceId { get; set; }   // identificador único del móvil
         public double? Latitud { get; set; }   // ubicación al momento del escaneo
         public double? Longitud { get; set; }
-
+        public string tipo { get; set; } = string.Empty;
 
         [Ignore]
         public string FechaFormateada => FechaEscaneo.ToString("dd/MM/yyyy HH:mm");

@@ -18,7 +18,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AsistenciaQR")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+28479c097857c11ddbff480d86a1074ed8712fa1")]
 [assembly: System.Reflection.AssemblyProductAttribute("AsistenciaQR")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AsistenciaQR")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
