@@ -3,15 +3,15 @@
   "Properties": {
     "target.prop.ro.product.build.version.sdk": "34",
     "target.prop.ro.product.cpu.abilist": "arm64-v8a;armeabi-v7a;armeabi",
-    "target.prop.ro.product.manufacturer": "TECNO",
-    "target.prop.ro.product.model": "TECNO KL7",
+    "target.prop.ro.product.manufacturer": "samsung",
+    "target.prop.ro.product.model": "SM-A525M",
     "target.prop.ro.product.cpu.abi": "arm64-v8a",
     "deploy.error.code": "",
     "deploy.tool": "xamarin.sync",
     "deploy.result": "Success",
     "deploy.supports.fastdev": "True",
     "deploy.systemapp": "False",
-    "deploy.duration.ms": "737",
+    "deploy.duration.ms": "1337",
     "pii.deploy.error": "",
     "pii.deploy.file": ""
   }

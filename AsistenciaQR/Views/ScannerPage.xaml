@@ -73,10 +73,7 @@
                     BackgroundColor="#9E9E9E"
                     WidthRequest="200"/>
 
-            <Button Text="🔄 Sincronizar asistencias"
-                    Command="{Binding SincronizarCommand}"
-                    BackgroundColor="#1976D2"
-                    WidthRequest="220"/>
+            
 
         </VerticalStackLayout>
 

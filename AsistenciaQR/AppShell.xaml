@@ -22,6 +22,21 @@
         Route="HistorialPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Registro Manual de asistencia" Icon="manual_icon.png">
+        <ShellContent
+     Title="Registro Manual"
+     ContentTemplate="{DataTemplate Vista:RegistroManualPage}"
+     Route="RegistroManualPage" />
+    </FlyoutItem>
 
+    <!-- ⚙️ Configuración -->
+    <FlyoutItem Title="Configuración" Icon="settings_icon.png">
+        <ShellContent
+            Title="Configuración"
+            ContentTemplate="{DataTemplate Vista:SettingsPage}"
+            Route="SettingsPage" />
+    </FlyoutItem>
+
+   
 
 </Shell>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:AsistenciaQR.Views"
+             x:Class="AsistenciaQR.Views.RegistroManualPage"
+             Title="Registro Manual"
+             BackgroundColor="White">
+
+    <Grid Padding="20" RowDefinitions="Auto,*" RowSpacing="15">
+
+        <!-- 🔍 Búsqueda -->
+        <Frame Grid.Row="0"
+               CornerRadius="12"
+               BorderColor="#28a745"
+               HasShadow="False"
+               Padding="6"
+               BackgroundColor="White">
+            <Entry x:Name="BusquedaInput"
+                   Placeholder="Buscar por cédula o apellidos"
+                   TextChanged="BusquedaInput_TextChanged"
+                   ClearButtonVisibility="WhileEditing"
+                   FontSize="16"
+                   TextColor="Black"/>
+        </Frame>
+
+        <!-- 📋 Lista -->
+        <CollectionView Grid.Row="1"
+                        x:Name="ListaDocentes"
+                        ItemsSource="{Binding DocentesFiltrados}"
+                        SelectionMode="None"
+                        ItemsLayout="VerticalList"
+                        VerticalOptions="FillAndExpand">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame CornerRadius="8"
+                           BorderColor="#28a745"
+                           BackgroundColor="#FAFAFA"
+                           HasShadow="False"
+                           Margin="0,4">
+                        <Grid Padding="5"
+                              ColumnDefinitions="*, Auto"
+                              RowDefinitions="Auto">
+
+                            <Label Grid.Column="0"
+                                   Text="{Binding NombreCompleto}"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Padding="10,5"
+                                   TextColor="Black"/>
+
+                            <Button Grid.Column="1"
+                                    Text="{Binding TipoAsistencia}"
+                                    FontSize="14"
+                                    Padding="10,5"
+                                    BackgroundColor="{Binding ColorBoton}"
+                                    TextColor="White"
+                                    CornerRadius="6"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:RegistroManualPage}}, Path=BindingContext.RegistrarCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="AsistenciaQR.Views.SettingsPage"
+    Title="Configuración"
+    BackgroundColor="#f4f4f4">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- 🧭 Título principal -->
+            <Label 
+                Text="⚙️ Configuración General"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#222"
+                HorizontalOptions="Center" />
+
+            <!-- 📦 Tarjeta contenedora -->
+            <Frame 
+                CornerRadius="20"
+                HasShadow="True"
+                BackgroundColor="White"
+                BorderColor="#e0e0e0"
+                Padding="20">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Tiempo de caducidad -->
+                    <Label 
+                        Text="⏱ Minutos válidos para QR (Entrada):"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="#444" />
+
+                    <Entry 
+                        x:Name="MinutosQRInput"
+                        Placeholder="10"
+                        Keyboard="Numeric"
+                        FontSize="16"
+                        BackgroundColor="#f2f2f2"
+                        TextColor="#222"
+                        Margin="0,0,0,10"
+                        HeightRequest="45"                        
+                        HorizontalOptions="Start"
+                        WidthRequest="120"/>
+
+                    <BoxView HeightRequest="1" Color="#e0e0e0" />
+
+                    <!-- URL del servidor -->
+                    <Label 
+                        Text="🌐 Servidor Backend (URL):"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="#444" />
+
+                    <Entry 
+                        x:Name="ServidorInput"
+                        Placeholder="https://mi-servidor.com/asistencia"
+                        Keyboard="Url"
+                        FontSize="16"
+                        BackgroundColor="#f2f2f2"
+                        TextColor="#222"
+                        HeightRequest="45"                        
+                        Margin="0,0,0,10"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- 💾 Botón guardar -->
+            <Button 
+                Text="💾 Guardar Cambios"
+                BackgroundColor="#3B82F6"
+                TextColor="White"
+                FontAttributes="Bold"
+                FontSize="18"
+                CornerRadius="15"
+                HeightRequest="55"
+                Clicked="Guardar_Clicked"
+                Shadow="10"/>
+
+            <!-- 🧹 Restablecer -->
+            <Button 
+                Text="♻️ Restablecer Valores"
+                BackgroundColor="#9333EA"
+                TextColor="White"
+                FontAttributes="Bold"
+                FontSize="18"
+                CornerRadius="15"
+                HeightRequest="55"
+                Clicked="Restablecer_Clicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

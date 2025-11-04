@@ -1,12 +1,13 @@
-﻿using System.Windows.Input;
+﻿using AsistenciaQR.Models;
+using AsistenciaQR.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using AsistenciaQR.Services;
-using AsistenciaQR.Models;
-using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices.Sensors;
 using Microsoft.Maui.Networking;
+using Microsoft.Maui.Storage;
+using System.Globalization;
 using System.Text.Json;
+using System.Windows.Input;
 
 namespace AsistenciaQR.ViewModels
 {
@@ -189,20 +190,80 @@ namespace AsistenciaQR.ViewModels
                     return;
                 }
 
-                // 🧩 Aquí antes se calculaban valores — AHORA se usan los del JSON
-                var baseUrl = "https://asistencia.instituto.edu/asistencia/registrar"; // URL fija o configurable
-                var docenteId = qrData.idDocente;
-                var deviceId = qrData.idDispositivo;
-                var lat = qrData.lat;
-                var lng = qrData.lng;
-                var tipo = qrData.tipo;
-                var fecha = qrData.fecha;
 
-                // 🔗 Construcción del URL (igual que antes, pero usando datos del JSON)
-                var urlSincronizacion = $"{baseUrl}?docente={docenteId}&fecha={fecha}" +
-                                        $"&tipo={tipo}&device_id={deviceId}&latitud={lat}&longitud={lng}";
+                // 🕒 Validación de fecha y tipo (simple y efectiva)
+                if (!DateTime.TryParse(qrData.fecha, out var fechaQr))
+                {
+                    await MostrarMensajeTemporal("⚠️ Fecha del QR inválida.");
+                    return;
+                }
 
-                Uri urifinal = new Uri(urlSincronizacion);
+                var ahora = DateTime.Now;
+
+                // Validar que el QR sea del mismo día
+                if (fechaQr.Date != ahora.Date)
+                {
+                    await MostrarMensajeTemporal("⚠️ El QR pertenece a otro día.");
+                    return;
+                }
+
+                // Obtener minutos configurados
+                int minutosValidez = 10; // valor por defecto
+                if (int.TryParse(Preferences.Get("MinutosQRValidez", "10"), out int m))
+                    minutosValidez = m;
+
+                // Si es entrada, validar que no tenga más de 10 minutos de diferencia
+                if (qrData.tipo?.Equals("Entrada", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var diferencia = Math.Abs((ahora - fechaQr).TotalMinutes);
+
+                    if (diferencia > minutosValidez)
+                    {
+                        await MostrarMensajeTemporal($"⚠️ QR de entrada vencido (más de {diferencia} minutos).");
+                        return;
+                    }
+                }
+                else if (!qrData.tipo?.Equals("Salida", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    await MostrarMensajeTemporal("⚠️ Tipo de QR no reconocido (debe ser Entrada o Salida).");
+                    return;
+                }
+
+
+
+
+                // 🧩 Datos del JSON
+               
+                // Recuperar desde las preferencias del usuario
+                var baseUrl = Preferences.Get("ServidorURL", "https://invincibly-peachy-tyrone.ngrok-free.dev/asistencia/registrar");
+                var docenteId = qrData.idDocente ?? "";
+                var deviceId = qrData.idDispositivo ?? "";
+                var lat = qrData.lat ?? "0";  // Si viene nulo, usa "0"
+                var lng = qrData.lng ?? "0";  // Si viene nulo, usa "0"
+                var tipo = qrData.tipo ?? "Entrada";
+                var fecha = fechaQr.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+                // ⚙️ Codificar parámetros para evitar errores en espacios o caracteres especiales
+                string fechaEncoded = Uri.EscapeDataString(fecha);
+                string tipoEncoded = Uri.EscapeDataString(tipo);
+                string deviceIdEncoded = Uri.EscapeDataString(deviceId);
+
+                // 🔗 Construcción del URL final
+                string urlSincronizacion =
+                    $"{baseUrl}?docente={docenteId}&fecha={fechaEncoded}" +
+                    $"&tipo={tipoEncoded}&device_id={deviceIdEncoded}&latitud={lat}&longitud={lng}";
+
+                Uri? urifinal = null;
+                try
+                {
+                    urifinal = new Uri(urlSincronizacion);
+                    Console.WriteLine($"✅ URL generada correctamente: {urifinal}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Error generando URI: {ex.Message}");
+                }
+
 
                 // 🚀 Intento de registro en línea
                 if (await IntentarRegistroEnLinea(urifinal))
@@ -213,7 +274,7 @@ namespace AsistenciaQR.ViewModels
                 else
                 {
                     await MostrarMensajeTemporal("⚠️ Sin conexión. Se guardará localmente.");
-                    await GuardarRegistroJsonLocal(qrData);
+                    await GuardarRegistroJsonLocal(qrData, urifinal);
                 }
             }
             finally
@@ -222,11 +283,6 @@ namespace AsistenciaQR.ViewModels
             }
         }
 
-        private int? ObtenerDocenteIdDesdeQR(Uri uri)
-        {
-            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            return int.TryParse(query["docente"], out int id) ? id : null;
-        }
 
         private async Task<bool> IntentarRegistroEnLinea(Uri uri)
         {
@@ -257,30 +313,30 @@ namespace AsistenciaQR.ViewModels
             catch { /* Ignorar errores de vibración */ }
         }
 
-        private async Task GuardarRegistroJsonLocal(DocenteQR qrData)
+        private async Task GuardarRegistroJsonLocal(DocenteQR qrData, Uri urifinal)
         {
             await DB.InitAsync();
 
-            var urlSincronizacion = $"https://asistencia.instituto.edu/asistencia/registrar?" +
-                                    $"docente={qrData.idDocente}&fecha={qrData.fecha}&tipo={qrData.tipo}" +
-                                    $"&device_id={qrData.idDispositivo}&latitud={qrData.lat}&longitud={qrData.lng}";
+
 
             // Evita duplicados
-            if (await DB.ExisteRegistroAsync(urlSincronizacion))
+            if (await DB.ExisteRegistroAsync(urifinal.AbsoluteUri))
                 return;
 
             var registro = new RegistroAsistencia
             {
-                UrlEscaneo = urlSincronizacion,
+                UrlEscaneo = urifinal.AbsoluteUri,
                 FechaEscaneo = DateTime.Now,
                 Estado = "pendiente",
                 Sincronizado = false,
-                DeviceId = qrData.idDispositivo,
-                Latitud = double.Parse(qrData.lat),
-                Longitud = double.Parse(qrData.lng)
+                DeviceId = qrData.idDispositivo ?? "",
+                Latitud = double.Parse(qrData.lat ?? "0"),
+                Longitud = double.Parse(qrData.lng ?? "0"),
+
             };
 
             await DB.GuardarAsync(registro);
+
         }
 
         private async Task GuardarRegistroLocal(int docenteId, Uri uri, DateTime fechaEscaneo)

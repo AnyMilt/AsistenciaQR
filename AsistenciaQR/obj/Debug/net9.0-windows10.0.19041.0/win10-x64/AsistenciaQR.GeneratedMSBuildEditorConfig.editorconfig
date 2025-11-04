@@ -63,8 +63,20 @@ build_metadata.AdditionalFiles.ManifestResourceName = AsistenciaQR.Views.Histori
 build_metadata.AdditionalFiles.TargetPath = Views\HistorialPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\HistorialPage.xaml
 
+[C:/Users/SoloCodigo/source/repos/AsistenciaQR/AsistenciaQR/Views/RegistroManualPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = AsistenciaQR.Views.RegistroManualPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\RegistroManualPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\RegistroManualPage.xaml
+
 [C:/Users/SoloCodigo/source/repos/AsistenciaQR/AsistenciaQR/Views/ScannerPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = AsistenciaQR.Views.ScannerPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\ScannerPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\ScannerPage.xaml
+
+[C:/Users/SoloCodigo/source/repos/AsistenciaQR/AsistenciaQR/Views/SettingsPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = AsistenciaQR.Views.SettingsPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SettingsPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SettingsPage.xaml
